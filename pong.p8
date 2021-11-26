@@ -1,0 +1,137 @@
+pico-8 cartridge // http://www.pico-8.com
+version 33
+__lua__
+//game loop
+
+function _init()
+	init_pad()
+	init_ball()
+	score = 0
+	high_score = 0
+end
+
+function _update()
+	cls()
+	print("score: "..score)
+	print("high score:"..high_score)
+	move_pad()
+	move_ball()
+	bounce_pad()
+	reset()
+end
+
+function _draw()
+	draw_pad()
+	draw_ball()
+end
+
+function reset()
+	if ball.y > 128 then
+		sfx(2)
+		ball.y = 24
+		set_highscore()
+		score = 0
+		init_ball()
+	end
+end
+
+function set_highscore()
+	if score > high_score then
+		high_score = score
+	end
+end
+-->8
+//paddle
+
+function init_pad()
+	pad = {}
+	pad.w = 24
+	pad.h = 4
+	pad.x = 52
+	pad.y = 122
+end
+
+function draw_pad()
+	rectfill(
+		pad.x,
+		pad.y,
+		pad.x+pad.w, 
+		pad.y+pad.h,
+		15
+	)
+end
+
+function move_pad()
+	if pad.x > 128-pad.w then
+		pad.x = 128-pad.w	
+	end
+	
+	if pad.x < 0 then
+		pad.x = 0	
+	end
+	
+	if btn(⬅️) then
+	 pad.x -= 4
+	end
+	
+	if btn(➡️) then
+		pad.x += 4
+	end
+end
+
+function bounce_pad()
+	if ball.x>=pad.x and
+		ball.x<=pad.x+pad.w and
+		ball.y>pad.y-ball.size then
+		ball.ydir+=.5 
+		ball.ydir = -ball.ydir
+		score+=1
+		sfx(0)
+	end
+end
+-->8
+//ball
+
+function init_ball()
+	ball = {}
+	ball.x=64
+ ball.y=64
+ ball.size=3
+ ball.xdir=5
+ ball.ydir=-3
+end
+
+function draw_ball()
+	circfill(ball.x,ball.y,ball.size,15)
+end
+
+function move_ball()
+	ball.x+=ball.xdir
+	ball.y+=ball.ydir
+	
+	if ball.x<ball.size then
+		ball.xdir = -ball.xdir
+		sfx(1)
+	end
+	
+	if ball.x>128-ball.size then
+		ball.xdir = -ball.xdir
+		sfx(1)
+	end
+	
+	if ball.y<ball.size then
+		ball.ydir = -ball.ydir
+		sfx(1)
+	end
+end
+__gfx__
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__sfx__
+000500000b15000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0008000006050210001b0001000017000130000b0000e0000c0000a00007000050000400003000020000200002000020000200001000000000000000000000000000000000000000000000000000000000000000
+000300002705023050000001c0500000017050140500000012050000000d050000000000009050000000000004050000000000001050000000000000000000000000000000000000000000000000000000000000
