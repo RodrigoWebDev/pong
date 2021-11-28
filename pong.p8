@@ -97,8 +97,8 @@ function init_ball()
 	ball.x=64
  ball.y=64
  ball.size=3
- ball.xdir=5
- ball.ydir=-3
+ ball.xdir=2.5
+ ball.ydir=-1.5
 end
 
 function draw_ball()
